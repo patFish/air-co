@@ -12,6 +12,7 @@ const roomLevel = co2$.subscribe(({ deviceId, payload }) => {
     roomLowLevel.set(deviceId, newCo2Level)
     console.log(`Sensor ${deviceId} level: ${newCo2Level}`)
   }
+
   const roomLevel = roomLowLevel.get(deviceId)
 
   if (roomLevel != newCo2Level) {
