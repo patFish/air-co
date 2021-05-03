@@ -1,4 +1,3 @@
-import { Subject } from 'rxjs'
 import { webSocket } from 'rxjs/webSocket'
 import { map, filter } from 'rxjs/operators'
 
@@ -26,19 +25,25 @@ battery$.subscribe((obj) => {
 const co2$ = sensorData$.pipe(filter((msg) => msg.payload.type === 1))
 
 let roomLowLevel = new Map()
-roomLowLevel.set(1, false)
-roomLowLevel.set(2, false)
 
 const roomLevel = co2$.subscribe((obj) => {
   const { deviceId, payload } = obj
-  const { value: newCo2Level } = payload
-  const isRoomLowLevel = roomLowLevel.get(deviceId)
-  if (newCo2Level > 1200 && isRoomLowLevel) {
-    roomLowLevel.set(deviceId, false)
+  const { value: co2 } = payload
+  let newCo2Level = co2 > 1200 ? 'high' : 'low'
+  if (roomLowLevel.get(deviceId) === undefined) {
+    roomLowLevel.set(deviceId, newCo2Level)
     console.log(`Sensor ${deviceId} level: ${newCo2Level}`)
   }
-  if (newCo2Level <= 1200 && !isRoomLowLevel) {
-    roomLowLevel.set(deviceId, true)
+  const roomLevel = roomLowLevel.get(deviceId)
+
+  if (co2 > 1200 && roomLevel === 'low') {
+    newCo2Level = 'high'
+  }
+  if (co2 <= 1200 && roomLevel === 'high') {
+    newCo2Level = 'low'
+  }
+  if (roomLevel != newCo2Level) {
+    roomLowLevel.set(deviceId, newCo2Level)
     console.log(`Sensor ${deviceId} level: ${newCo2Level}`)
   }
 })
