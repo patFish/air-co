@@ -2,8 +2,7 @@ import { co2$ } from './co2Sensor'
 
 let roomLowLevel = new Map()
 
-const roomLevel = co2$.subscribe((obj) => {
-  const { deviceId, payload } = obj
+const roomLevel = co2$.subscribe(({ deviceId, payload }) => {
   const { value: co2 } = payload
   let newCo2Level = co2 > 1200 ? 'high' : 'low'
   if (roomLowLevel.get(deviceId) === undefined) {
