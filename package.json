@@ -14,7 +14,8 @@
   },
   "scripts": {
     "babel": "babel --presets es2015 js/main.js -o build/main.bundle.js",
-    "start": "nodemon --exec babel-node --presets es2015 index.js"
+    "dev": "nodemon --exec babel-node --presets es2015 index.js",
+    "start": "babel-node --presets es2015 index.js"
   },
   "dependencies": {
     "rxjs": "^6.6.7",
